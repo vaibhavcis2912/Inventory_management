@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="InventoryManagement">
+<head>
+    <meta charset="utf-8" />
+    <title>Inventory Management</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="col-xs-offset-2 col-xs-8">
+			<div ng-view></div>
+		</div>
+	</div>
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//code.angularjs.org/1.2.20/angular.js"></script>
+    <script src="//code.angularjs.org/1.2.20/angular-route.js"></script>
+    <script src="//code.angularjs.org/1.2.13/angular-cookies.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/js/pouchdb.min.js"></script>
+	<script src="scripts/js/pouchdb.find.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="modules/authentication/app/services/AuthenticationService.js"></script>
+    <script src="modules/authentication/app/controllers/LoginController.js"></script>
+    <script src="modules/home/app/controllers/HomeController.js"></script>
+	<script src="modules/products/app/services/ProductService.js"></script>
+    <script src="modules/products/app/controllers/ProductController.js"></script>
+</body>
+</html>

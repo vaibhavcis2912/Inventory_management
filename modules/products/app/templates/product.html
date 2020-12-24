@@ -1,0 +1,28 @@
+<br />
+	<h3 align="center">Product Detail: {{productData.productName}}</h3>
+<br />
+<p><a href="#/">Home</a></p>
+<p><a href="#/products">Product Listing</a></p>
+<p><a href="#/login">Logout</a></p>
+<div ng-if="productData">
+	<div class="row">
+		<div class="col-sm-3">Product Name:</div>
+		<div class="col-sm-9">{{productData.productName}}</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">Category:</div>
+		<div class="col-sm-9">{{productData.categoryName}}</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">Description:</div>
+		<div class="col-sm-9">{{productData.description}}</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">Price:</div>
+		<div class="col-sm-9">{{productData.price}}</div>
+	</div>
+	<div class="row right"> 
+		<div class="col-sm-9"></div>
+		<div class="col-sm-3"><a href="#/editProduct/{{productData._id}}" class="btn btn-warning">Edit</a></div>
+	</div>
+</div>

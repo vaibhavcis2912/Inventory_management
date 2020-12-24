@@ -1,0 +1,43 @@
+<br />
+	<h3 align="center">Product Listing</h3>
+<br />
+<p><a href="#/">home</a></p>
+<p><a href="#/login">Logout</a></p>
+<div class="alert alert-success alert-dismissible" ng-show="success" >
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	{{successMessage}}
+</div>
+<div align="right">
+	<a href="#/addProduct" class="btn btn-success">Add</a>
+</div>
+<br />
+<div class="table-responsive" style="overflow-x: unset;">
+	<table class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th><button type="button" ng-click="deleteSelectedProducts(selectedProducts)" class="btn btn-danger btn-xs">Delete Selected Products</button></th>
+				<th>ID</th>
+				<th>ProductName</th>
+				<th>Category</th>
+				<th>Price</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="eachProduct in products">
+				<td>
+					<input type="checkbox" ng-model="active" ng-change="selectProduct(eachProduct, active)" />
+				</td>
+				<td>{{$index + 1}}</td>
+				<td>{{eachProduct.productName}}</td>
+				<td>{{eachProduct.categoryName}}</td>
+				<td>{{eachProduct.price}}</td>
+				<td>
+					<a href="#/product/{{eachProduct._id}}" class="btn btn-primary btn-xs">View</a>
+					<a href="#/editProduct/{{eachProduct._id}}" class="btn btn-warning btn-xs">Edit</a>
+					<button type="button" ng-click="deleteProdcutData(eachProduct._id)" class="btn btn-danger btn-xs">Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
