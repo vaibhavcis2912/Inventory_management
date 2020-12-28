@@ -5,32 +5,15 @@ angular.module('Authentication')
 .controller('LoginController',
     ['$scope', '$rootScope', '$location', 'AuthenticationService','$timeout',
     function ($scope, $rootScope, $location, AuthenticationService, $timeout) {
-        var db = new PouchDB('inventory_user_data');
-        var user = {
-            _id: "user:"+new Date().toISOString(),
-            username: "admin",
-            password: "Cisin123456"
-          };
-          db.find({
-            selector: {
-              _id: {
-                          $gt: "user:",
-                          $lt: "user:\uffff"
-                      },
-              username: "admin",
-              password: "Cisin123456"
-            }
-          }, function (err, doc) {
-            if (!err && doc.docs.length == 0) {
-              db.put(user, function callback(err1, result) {
-                if (!err1) {
-                  // console.log('Default User Created!');
-                }
-                
-              });
-            }
-          })
-        // reset login status
+        // var db = new PouchDB('inventory_user_data');
+        // // db.destroy().then(function (response) {
+        // //   // success
+        // //   console.log("succeess")
+        // // }).catch(function (err) {
+        // //   console.log(err);
+        // // });
+       
+        AuthenticationService.createDefaluUser();
         AuthenticationService.ClearCredentials();
 
         $scope.login = function () {
@@ -42,10 +25,13 @@ angular.module('Authentication')
                 } else {
                     $scope.error = response.message;
                     $scope.dataLoading = false;
+                    alert("Invalid username or password!")
                 }
-                $timeout(function() { //used timeout here to fix the "already a $digest cycle running" problem
-					$scope.$apply();
-				});
+                $scope.$evalAsync();
+
+                // $timeout(function() { //used timeout here to fix the "already a $digest cycle running" problem
+                //   $scope.$apply();
+                // });
 
             });
         };

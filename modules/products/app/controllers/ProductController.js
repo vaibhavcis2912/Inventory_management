@@ -17,29 +17,32 @@ angular.module('Products')
 				//function for load all the products
 				$scope.loadProducts = function () {
 					if ($scope.productId) {
-						ProductService.getProductById($scope.productId).then(function (response) {
-									if(response){
-										$scope.productData = response;
-										$scope.$apply();
-									}
+						ProductService.getProductById($scope.productId, function (response) {
+							if (response.success) {
+								$scope.productData = response.data;
+								$scope.$apply();
+							}
+							else {
+								alert(response.err)
+							}
 						})
 					}
 					else {
-						ProductService.loadProducts().then(function (response) {
+						ProductService.loadProducts(function (response) {
 							if (response.success) {
 								$scope.products = response.data;
 								$scope.$apply();
 							}
+							else {
+								alert(response.err)
+							}
 						});
 					}
-
-
-
 				};
 				$scope.loadProducts();
 
 				$scope.saveData = function () {
-					ProductService.saveData($scope.productData).then(function (response) {
+					ProductService.saveData($scope.productData, function (response) {
 						if (response.success) {
 							$location.path('/products');
 							$scope.$apply();
@@ -49,9 +52,12 @@ angular.module('Products')
 
 				$scope.deleteProdcutData = function (id) {
 					if (confirm("Are you sure you want to remove it?")) {
-						ProductService.deleteProdcutData(id).then(function (response) {
-							if(response){
+						ProductService.deleteProdcutData(id, function (response) {
+							if (response) {
 								$scope.loadProducts()
+							}
+							else {
+								alert("error while deleting product !")
 							}
 						});
 					}
@@ -60,7 +66,7 @@ angular.module('Products')
 				//function will call on the checkbox selection
 				$scope.selectProduct = function (product, active) {
 					if (active) {
-						$scope.selectedProducts.push({_id : product._id, _rev: product._rev, _deleted : true })
+						$scope.selectedProducts.push({ _id: product._id, _rev: product._rev, _deleted: true })
 					}
 					else {
 						$scope.selectedProducts.splice($scope.selectedProducts.indexOf(x => x._id == product._id), 1);
@@ -69,17 +75,20 @@ angular.module('Products')
 
 				//for multiple delete
 				$scope.deleteSelectedProducts = function () {
-					if ($scope.selectedProducts.length > 0 && confirm("Are you sure you want to remove selected products?")) {						
-						ProductService.deleteMultipleProdcuts($scope.selectedProducts).then(function (response) {
-							if(response){
+					if ($scope.selectedProducts.length > 0 && confirm("Are you sure you want to remove selected products?")) {
+						ProductService.deleteMultipleProdcuts($scope.selectedProducts, function (response) {
+							if (response) {
 								$scope.selectedProducts = [];
 								$scope.loadProducts(
-									
+
 								)
+							}
+							else {
+								alert("error while deleting multiple products")
 							}
 						});
 					}
-					else{
+					else {
 						alert("No product select!")
 					}
 				};

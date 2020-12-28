@@ -3,93 +3,75 @@
 angular.module('Products')
 
 .factory('ProductService',
-	['$http',
-		function ($http) {
+	['$http','PouchDBService',
+		function ($http, PouchDBService) {
 			var db = new PouchDB('inventory_user_data');
 			var service = {
-				loadProducts: function () {
-					//here will get the all products data from DB and return;
-					return new Promise (function (resolutionFunc, rejectionFunc) {
-						db.find({
-							selector: {
-								_id: {
-									$gt: "product:",
-									$lt: "product:\uffff"
-								}
-							}
-						  }, function (err, doc) {
-							if (!err) {
-							  resolutionFunc({success : true, data: doc.docs})
-							}
-							else{
-								resolutionFunc({success: false, error : err})
-
-							}
-						  });
+				loadProducts: async function (callback) {
+					PouchDBService.getData({
+						_id: {
+							$gt: "product:",
+							$lt: "product:\uffff"
+						},
+					}).then(function (data) {
+						console.log(data)
+						callback({ success: true ,data : data.docs})
+					}, function (err) {
+						console.log(err)
+						callback({ success: false, err: err })
 					})
-					return;
 				},
 
-				getProductById: function (id) {
+				getProductById: function (id, callback) {
 					//here will get the product data from DB based on id and return;
-					return new Promise (function (resolutionFunc, rejectionFunc) {
-						db.get(id).then(function(data, err){
-							if(!err){
-								resolutionFunc(data)
-							}
-
-						})
+					PouchDBService.getDocumentById(id
+					).then(function (data) {
+						console.log(data)
+						callback({ success: true ,data : data})
+					}, function (err) {
+						console.log(err)
+						callback({ success: false, err: err })
 					})
 				},
 				
-				saveData: function (productData) {
+				saveData: function (productData, callback) {
 					//here will send the data to save and edit
 					//if productData contain productId then send edit otherwise add 
-					return new Promise (function (resolutionFunc, rejectionFunc) {
 						if(productData._id == undefined){
 							productData._id = "product:"+new Date().toISOString();
 						}
-						db.put(productData, function callback(err, result) {
-							if (!err) {
-							  resolutionFunc({success : true, data: result})
-							}
-							else{
-								resolutionFunc({success: false, error : err})
-
-							}
-						  });
+					PouchDBService.addOrUpdateData(productData).then(function (data) {
+						console.log(data)
+						callback({ success: true ,data : data})
+					}, function (err) {
+						console.log(err)
+						callback({ success: false, err: err })
 					})
 				},
-				deleteProdcutData: function (id) {
+
+				deleteProdcutData: function (id, callback) {
 					//here will send request for delete product based on id
-					return new Promise (function (resolutionFunc, rejectionFunc) {
-						db.get(id).then(function(data, err){
-							if(!err){
-								db.remove(data).then(function(dataDel, errdel){
-									if(!errdel){
-										resolutionFunc(true)
-									}
-									else{
-										resolutionFunc(false)
-									}
-								})
-
-							}
-
+					PouchDBService.getDocumentById(id
+						).then(function (data) {
+							console.log(data)
+							PouchDBService.deleteOneDocument(data).then(function(doc){
+								callback(true)
+							}, function(delErr){
+								callback(false)
+							})
+						}, function (err) {
+							console.log(err)
+							callback({ success: false, err: err })
 						})
-					})
 				},
-				deleteMultipleProdcuts: function (docs) {
+				deleteMultipleProdcuts: function (docs, callback) {
 					//here will send request for delete multiple products based on ids
-					return new Promise (function (resolutionFunc, rejectionFunc) {
-					db.bulkDocs(docs, function(err, response) {
-						if (err) {
-						   resolutionFunc(false)
-						} else {
-						   resolutionFunc(true)
-						}
-					 });
+					PouchDBService.deleteMultipleDocuments(docs).then(function (data) {
+						callback(true)
+					}, function (err) {
+						callback(false)
 					})
+					
 				},
 			};
 

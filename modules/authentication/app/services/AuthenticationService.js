@@ -3,8 +3,8 @@
 angular.module('Authentication')
 
     .factory('AuthenticationService',
-        ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout',
-            function (Base64, $http, $cookieStore, $rootScope, $timeout) {
+        ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout', 'PouchDBService',
+            function (Base64, $http, $cookieStore, $rootScope, $timeout, PouchDBService) {
                 var service = {};
 
                 service.Login = function (username, password, callback) {
@@ -12,39 +12,62 @@ angular.module('Authentication')
                     /* uses $timeout to simulate waiting  call
                      ----------------------------------------------*/
                     $timeout(async function () {
-                        var response = { success: await checkUserExist(username, password)};
-                        if (!response.success) {
-                            response.message = 'Username or password is incorrect';
-                        }
-                        callback(response);
+                        PouchDBService.getData({
+                            _id: {
+                                $gt: "user:",
+                                $lt: "user:\uffff"
+                            },
+                            username: username,
+                            password: password
+                        }).then(function (data) {
+                            console.log(data)
+                            if (data.docs.length == 0) {
+                                callback({ success: false })
+                                return;
+                            }
+                            callback({ success: true })
+                        }, function (err) {
+                            console.log(err)
+                            callback({ success: false })
+                        })
                     }, 1000);
 
                 };
-                // check the user exist or not in the db
-                function checkUserExist(username, password) {
-                    return new Promise(function (resolutionFunc, rejectionFunc) {
-                        var db = new PouchDB('inventory_user_data');
 
-                        db.find({
-                            selector: {
-                                _id: {
-                                    $gt: "user:",
-                                    $lt: "user:\uffff"
-                                },
-                                username: username,
-                                password: password
-                            }
-                        }, function (err, doc) {
+                service.createDefaluUser = function (data) {
+                    let username = "admin";
+                    let password = "Cisin123456";
+
+                    PouchDBService.getData({
+                        _id: {
+                            $gt: "user:",
+                            $lt: "user:\uffff"
+                        },
+                        username: username,
+                        password: password
+                    }).then(function (data) {
+                        console.log(data)
+                        if (data.docs.length == 0) {
+                            var user = {
+                                _id: "user:" + new Date().toISOString(),
+                                username: "admin",
+                                password: "Cisin123456"
+                            };
+                            PouchDBService.addOrUpdateData(user).then(function(data){
+                                console.log("user created successfully")
+                            }, function(err){
+                                alert(err)
+                            })
                             
-                            if (!err && doc.docs.length == 0) {
-                                resolutionFunc(false)
-                            }
-                            else {
-                                resolutionFunc(true)
-                            }
-                           
-                        })
+                        }
+                        else{
+                            console.log("user already exist")
+                        }
+                    }, function (err) {
+                        console.log(err)
+                        alert(err)
                     })
+
                 }
 
                 service.SetCredentials = function (username, password) {
