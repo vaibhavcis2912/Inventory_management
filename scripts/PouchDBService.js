@@ -6,7 +6,6 @@ angular.module('InventoryManagement')
 		['$http',
 			function ($http) {
 				var db = new PouchDB('inventory_user_data');
-				console.log(db);
 				var service = {
 					getData: function (query) {
 						return new Promise(function (resolutionFunc, rejectionFunc) {
@@ -64,7 +63,7 @@ angular.module('InventoryManagement')
 
 					deleteMultipleDocuments : function(data){
 						return new Promise (function (resolutionFunc, rejectionFunc) {
-							db.bulkDocs(docs, function(err, response) {
+							db.bulkDocs(data, function(err, response) {
 								if (!err) {
 								   resolutionFunc(response)
 								} else {

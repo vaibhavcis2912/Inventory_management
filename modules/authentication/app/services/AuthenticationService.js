@@ -20,15 +20,13 @@ angular.module('Authentication')
                             username: username,
                             password: password
                         }).then(function (data) {
-                            console.log(data)
                             if (data.docs.length == 0) {
-                                callback({ success: false })
+                                callback({ success: false , message:"Invalid Username or password !"})
                                 return;
                             }
                             callback({ success: true })
                         }, function (err) {
-                            console.log(err)
-                            callback({ success: false })
+                            callback({ success: false, message: err })
                         })
                     }, 1000);
 
@@ -46,7 +44,6 @@ angular.module('Authentication')
                         username: username,
                         password: password
                     }).then(function (data) {
-                        console.log(data)
                         if (data.docs.length == 0) {
                             var user = {
                                 _id: "user:" + new Date().toISOString(),
@@ -54,17 +51,13 @@ angular.module('Authentication')
                                 password: "Cisin123456"
                             };
                             PouchDBService.addOrUpdateData(user).then(function(data){
-                                console.log("user created successfully")
                             }, function(err){
                                 alert(err)
                             })
                             
                         }
-                        else{
-                            console.log("user already exist")
-                        }
+                        
                     }, function (err) {
-                        console.log(err)
                         alert(err)
                     })
 

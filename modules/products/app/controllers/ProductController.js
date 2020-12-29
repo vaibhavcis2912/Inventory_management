@@ -20,7 +20,7 @@ angular.module('Products')
 						ProductService.getProductById($scope.productId, function (response) {
 							if (response.success) {
 								$scope.productData = response.data;
-								$scope.$apply();
+								$scope.$evalAsync();
 							}
 							else {
 								alert(response.err)
@@ -31,7 +31,7 @@ angular.module('Products')
 						ProductService.loadProducts(function (response) {
 							if (response.success) {
 								$scope.products = response.data;
-								$scope.$apply();
+								$scope.$evalAsync();
 							}
 							else {
 								alert(response.err)
@@ -45,7 +45,7 @@ angular.module('Products')
 					ProductService.saveData($scope.productData, function (response) {
 						if (response.success) {
 							$location.path('/products');
-							$scope.$apply();
+							$scope.$evalAsync();
 						}
 					});
 				};

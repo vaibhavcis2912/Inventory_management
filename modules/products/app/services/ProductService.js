@@ -14,10 +14,8 @@ angular.module('Products')
 							$lt: "product:\uffff"
 						},
 					}).then(function (data) {
-						console.log(data)
 						callback({ success: true ,data : data.docs})
 					}, function (err) {
-						console.log(err)
 						callback({ success: false, err: err })
 					})
 				},
@@ -26,10 +24,8 @@ angular.module('Products')
 					//here will get the product data from DB based on id and return;
 					PouchDBService.getDocumentById(id
 					).then(function (data) {
-						console.log(data)
 						callback({ success: true ,data : data})
 					}, function (err) {
-						console.log(err)
 						callback({ success: false, err: err })
 					})
 				},
@@ -41,10 +37,8 @@ angular.module('Products')
 							productData._id = "product:"+new Date().toISOString();
 						}
 					PouchDBService.addOrUpdateData(productData).then(function (data) {
-						console.log(data)
 						callback({ success: true ,data : data})
 					}, function (err) {
-						console.log(err)
 						callback({ success: false, err: err })
 					})
 				},
@@ -53,14 +47,12 @@ angular.module('Products')
 					//here will send request for delete product based on id
 					PouchDBService.getDocumentById(id
 						).then(function (data) {
-							console.log(data)
 							PouchDBService.deleteOneDocument(data).then(function(doc){
 								callback(true)
 							}, function(delErr){
 								callback(false)
 							})
 						}, function (err) {
-							console.log(err)
 							callback({ success: false, err: err })
 						})
 				},
